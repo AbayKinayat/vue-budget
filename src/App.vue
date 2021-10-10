@@ -47,7 +47,6 @@ button {
 
 .main {
   width: 100%;
-  
   padding: 56px 0 0 55px;
 }
 
