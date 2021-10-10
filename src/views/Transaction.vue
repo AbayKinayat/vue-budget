@@ -9,6 +9,7 @@
     </div>
     <div class="transactions_right">
       <TransactionsChart />
+      <ExchangeRates />
     </div>
   </div>
 </template>
@@ -17,12 +18,14 @@
 import FilterBox from "@/components/FilterBox";
 import TransactionList from "@/components/TransactionList";
 import TransactionsChart from "@/components/TransactionsChart";
+import ExchangeRates from "@/components/ExchangeRates";
 export default {
   name: "Transaction",
   components: {
     FilterBox,
     TransactionList,
     TransactionsChart,
+    ExchangeRates,
   },
 };
 </script>

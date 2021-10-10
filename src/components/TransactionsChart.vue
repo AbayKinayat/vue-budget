@@ -1,5 +1,5 @@
 <template>
-  <div class="transaction-chart__card">
+  <div class="transaction__card">
     <BarChart :chartData="testData" :options="options" />
   </div>
 </template>
@@ -87,9 +87,10 @@ export default {
 <style lang="scss">
 @import "@/scss/_variables.scss";
 
-.transaction-chart__card {
+.transaction__card {
   background-color: $primary-color;
 
+  margin-bottom: 40px;
   border-radius: 48px;
   padding: 20px;
 }
