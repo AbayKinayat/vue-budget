@@ -61,9 +61,11 @@ export default {
 .filter-box {
   display: flex;
   align-items: center;
+  width: max-content;
   background: $primary-color;
   border-radius: 12px;
 
+  margin-bottom: 20px;
   padding: 8px 11px;
 }
 
