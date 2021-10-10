@@ -32,8 +32,9 @@ body {
   font-family: "Montserrat", sans-serif;
   color: #fff;
   background-color: $body-color;
+  overflow: hidden;
 
-  padding: 0 17px;
+  padding-left: 17px;
 }
 
 ul {
@@ -48,6 +49,21 @@ button {
 .main {
   width: 100%;
   padding: 56px 0 0 55px;
+  height: 100vh;
+  overflow-y: auto;
+  padding-right: 17px;
+}
+
+main::-webkit-scrollbar {
+  width: 15px;
+  height: 10px;
+}
+main::-webkit-scrollbar-track {
+  background-color: $body-color;
+}
+main::-webkit-scrollbar-thumb {
+  background: #fff;
+  border: 5px solid $body-color;
 }
 
 .flex {
@@ -69,5 +85,9 @@ button {
   font-size: 30px;
 
   margin-bottom: 24px;
+}
+
+.max-content {
+  width: max-content !important;
 }
 </style>
