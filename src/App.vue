@@ -1,30 +1,72 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div class="flex">
+    <HeaderSidebar />
+    <main class="main">
+      <Transaction />
+    </main>
   </div>
-  <router-view/>
 </template>
 
+<script>
+import HeaderSidebar from "@/components/HeaderSidebar";
+import Transaction from "@/views/Transaction";
+export default {
+  components: {
+    HeaderSidebar,
+    Transaction,
+  },
+};
+</script>
+
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+@import "@/scss/_variables.scss";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -o-box-sizing: border-box;
 }
 
-#nav {
-  padding: 30px;
+body {
+  font-family: "Montserrat", sans-serif;
+  color: #fff;
+  background-color: $body-color;
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+  padding: 0 17px;
+}
 
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+ul {
+  list-style: none;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+}
+
+.main {
+  padding: 56px 0 0 55px;
+}
+
+.flex {
+  display: flex;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+.justify-center {
+  justify-content: center;
+}
+.align-center {
+  align-items: center;
+}
+
+.section-title {
+  font-weight: 600;
+  font-size: 30px;
+
+  margin-bottom: 24px;
 }
 </style>
