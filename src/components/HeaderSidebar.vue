@@ -40,6 +40,10 @@
       <nav>
         <ul class="nav-links">
           <li class="nav-link">
+            <div
+              v-show="$route.name === 'Transaction'"
+              class="active-line"
+            ></div>
             <router-link active-class="active" :to="{ name: 'Transaction' }">
               <svg
                 class="transaction-icon"
@@ -67,6 +71,7 @@
             </router-link>
           </li>
           <li class="nav-link">
+            <div v-show="false" class="active-line"></div>
             <svg
               class="statistic-icon"
               viewBox="0 0 35 31"
@@ -92,6 +97,7 @@
             </button>
           </li>
           <li class="nav-link">
+            <div v-show="$route.name === 'Budget'" class="active-line"></div>
             <router-link active-class="active" :to="{ name: 'Budget' }">
               <svg
                 width="36"
@@ -209,7 +215,13 @@ export default {
 }
 
 .nav-link {
+  position: relative;
   margin-bottom: 70px;
+  transition: .2s ease;
+
+  &:hover {
+    filter: brightness(1.1);
+  }
 }
 
 a.active {
@@ -220,5 +232,16 @@ a.active {
   .budget-icon {
     fill: #fff;
   }
+}
+
+.active-line {
+  position: absolute;
+  top: 50%;
+  left: -42px;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 36px;
+
+  background-color: $active-color;
 }
 </style>
