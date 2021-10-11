@@ -1,19 +1,35 @@
 <template>
   <div class="flex">
-    <HeaderSidebar />
+    <HeaderSidebar @showModal="toggleTransactionModal" />
     <main class="main">
       <Transaction />
     </main>
+    <addTransactionModal @closeModal="toggleTransactionModal" :isOpen="addTransactionIsOpen" />
   </div>
 </template>
 
 <script>
 import HeaderSidebar from "@/components/HeaderSidebar";
 import Transaction from "@/views/Transaction";
+import addTransactionModal from "@/components/addTransactionModal";
+import { ref } from "vue";
 export default {
   components: {
     HeaderSidebar,
     Transaction,
+    addTransactionModal,
+  },
+  setup() {
+    const addTransactionIsOpen = ref(false);
+
+    function toggleTransactionModal() {
+      addTransactionIsOpen.value = !addTransactionIsOpen.value;
+    }
+
+    return {
+      addTransactionIsOpen,
+      toggleTransactionModal,
+    };
   },
 };
 </script>
@@ -89,5 +105,9 @@ main::-webkit-scrollbar-thumb {
 
 .max-content {
   width: max-content !important;
+}
+
+.flex-1 {
+  flex: 1;
 }
 </style>
