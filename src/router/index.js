@@ -1,7 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import Transaction from "@/views/Transaction";
 
 const routes = [
-  
+  {
+    path: '/',
+    name: 'Transaction',
+    component: Transaction,
+  },
+  {
+    path: '/budget',
+    name: 'Budget',
+    component: () => import("@/views/Budget")
+
+  },
 ]
 
 const router = createRouter({

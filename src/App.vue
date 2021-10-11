@@ -2,21 +2,22 @@
   <div class="flex">
     <HeaderSidebar @showModal="toggleTransactionModal" />
     <main class="main">
-      <Transaction />
+      <router-view></router-view>
     </main>
-    <addTransactionModal @closeModal="toggleTransactionModal" :isOpen="addTransactionIsOpen" />
+    <addTransactionModal
+      @closeModal="toggleTransactionModal"
+      :isOpen="addTransactionIsOpen"
+    />
   </div>
 </template>
 
 <script>
 import HeaderSidebar from "@/components/HeaderSidebar";
-import Transaction from "@/views/Transaction";
 import addTransactionModal from "@/components/addTransactionModal";
 import { ref } from "vue";
 export default {
   components: {
     HeaderSidebar,
-    Transaction,
     addTransactionModal,
   },
   setup() {
@@ -101,6 +102,14 @@ main::-webkit-scrollbar-thumb {
   font-size: 30px;
 
   margin-bottom: 24px;
+}
+
+.section-title-two {
+  font-size: 15px;
+  line-height: 18px;
+  color: $small-color;
+
+  margin-bottom: 10px;
 }
 
 .max-content {
