@@ -11,7 +11,8 @@ import { ref, computed } from "vue";
 import { useStore } from "vuex";
 
 Chart.register(...registerables);
-Chart.defaults.color = "#ffffff";
+Chart.defaults.color = "#7C70B2";
+Chart.defaults.borderColor	= "#7C70B2"
 
 export default {
   name: "TransactionsChart",
@@ -68,13 +69,13 @@ export default {
           label: "Расход",
           data: transactionsIncomeCash.value,
           backgroundColor: "#FF7070",
-          stack: "das"
+          stack: "das",
         },
         {
           label: "Доход",
           data: transactionsExpenseCash.value,
           backgroundColor: "#A0E630",
-          stack: "das"
+          stack: "das",
         },
       ],
     }));

@@ -85,7 +85,9 @@
             </svg>
           </li>
           <li class="nav-link">
-            <button class="add-item_circle">+</button>
+            <button @click="$emit('showModal')" class="add-item_circle">
+              +
+            </button>
           </li>
           <li class="nav-link">
             <svg
