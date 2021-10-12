@@ -11,7 +11,11 @@ const routes = [
     path: '/budget',
     name: 'Budget',
     component: () => import("@/views/Budget")
-
+  },
+  {
+    path: '/personal-area',
+    name: 'Personal Area',
+    component: () => import("@/views/PersonalArea")
   },
 ]
 
