@@ -17,6 +17,11 @@ const routes = [
     name: 'Personal Area',
     component: () => import("@/views/PersonalArea")
   },
+  {
+    path: "/login",
+    name: "Login",
+    component: () => import("@/views/LoginPage")
+  }
 ]
 
 const router = createRouter({
