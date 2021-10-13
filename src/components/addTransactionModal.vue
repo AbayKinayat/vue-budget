@@ -179,8 +179,15 @@ export default {
     }
 
     &:focus {
+      filter: brightness(1.1);
       outline: none;
     }
+  }
+}
+
+.form-group.circle {
+  input {
+    border-radius: 25px;
   }
 }
 

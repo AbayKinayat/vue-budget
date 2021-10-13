@@ -1,13 +1,18 @@
 <template>
   <div class="flex">
-    <HeaderSidebar @showModal="toggleTransactionModal" />
-    <main class="main">
+    <template v-if="$route.name === 'Login'">
       <router-view></router-view>
-    </main>
-    <addTransactionModal
-      @closeModal="toggleTransactionModal"
-      :isOpen="addTransactionIsOpen"
-    />
+    </template>
+    <template v-if="$route.name !== 'Login'">
+      <HeaderSidebar @showModal="toggleTransactionModal" />
+      <main class="main">
+        <router-view></router-view>
+      </main>
+      <addTransactionModal
+        @closeModal="toggleTransactionModal"
+        :isOpen="addTransactionIsOpen"
+      />
+    </template>
   </div>
 </template>
 
