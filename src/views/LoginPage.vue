@@ -2,9 +2,9 @@
   <div class="auth">
     <div class="auth-modal">
       <div class="auth-modal__left">
-        <div class="auth-modal__title">Войти</div>
+        <div class="auth-modal__title">{{ authModalTitle }}</div>
         <div class="auth-modal__subtitle">
-          Не желайте и не надейтесь. Намеревайтесь.
+          {{ authModalSubtitle }}
         </div>
         <form @submit.prevent="submit" ref="form">
           <div class="form-group circle">
@@ -17,13 +17,13 @@
           </div>
           <div class="flex">
             <div class="flex-1"></div>
-            <button class="auth-modal-btn ml-auto">Войти</button>
+            <button class="auth-modal-btn ml-auto">{{ authModalTitle }}</button>
           </div>
           <div class="auth-modal__text">
-            Не зарегестрированы?
-            <!-- <router-link class="auth-modal__link" :to="{ name: 'Registration' }"
-              >Создайте Аккаунт</router-link
-            > -->
+            {{ authModalTextFirst }}
+            <router-link class="auth-modal__link" :to="{ name: routeName }">{{
+              authModalTextLast
+            }}</router-link>
           </div>
         </form>
         <div>
@@ -292,14 +292,41 @@
 </template>
 
 <script>
-import { reactive } from "vue";
+import { reactive, computed } from "vue";
+import { useRoute } from "vue-router";
 export default {
   name: "LoginPage",
   setup() {
+    const route = useRoute();
+
     const user = reactive({
       email: "",
       password: "",
     });
+
+    const authModalTitle = computed(() =>
+      route.name === "Login"
+        ? "Войти"
+        : route.name === "Registration" && "Регистрация"
+    );
+
+    const authModalSubtitle = computed(() =>
+      route.name === "Login"
+        ? "Не желайте и не надейтесь. Намеревайтесь."
+        : "Сделайте первый шаг к вашей финансовой безопасности"
+    );
+
+    const authModalTextFirst = computed(() =>
+      route.name === "Login" ? "Не зарегистрированы?" : "Уже есть аккаунт?"
+    );
+
+    const authModalTextLast = computed(() =>
+      route.name === "Login" ? "Создайте аккаунт" : "Войдите в аккаунт"
+    );
+
+    const routeName = computed(() =>
+      route.name === "Login" ? "Registration" : "Login"
+    );
 
     const submit = () => {
       console.log(user);
@@ -307,7 +334,12 @@ export default {
 
     return {
       user,
-      submit
+      authModalTitle,
+      authModalSubtitle,
+      authModalTextFirst,
+      authModalTextLast,
+      routeName,
+      submit,
     };
   },
 };
