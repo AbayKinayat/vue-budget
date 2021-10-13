@@ -1,9 +1,9 @@
 <template>
   <div class="flex">
-    <template v-if="$route.name === 'Login'">
+    <template v-if="isLoginOrRegisterRoute">
       <router-view></router-view>
     </template>
-    <template v-if="$route.name !== 'Login'">
+    <template v-if="!isLoginOrRegisterRoute">
       <HeaderSidebar @showModal="toggleTransactionModal" />
       <main class="main">
         <router-view></router-view>
@@ -19,7 +19,8 @@
 <script>
 import HeaderSidebar from "@/components/HeaderSidebar";
 import addTransactionModal from "@/components/addTransactionModal";
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useRoute } from "vue-router";
 export default {
   components: {
     HeaderSidebar,
@@ -27,13 +28,19 @@ export default {
   },
   setup() {
     const addTransactionIsOpen = ref(false);
+    const route = useRoute();
 
     function toggleTransactionModal() {
       addTransactionIsOpen.value = !addTransactionIsOpen.value;
     }
 
+    const isLoginOrRegisterRoute = computed(
+      () => route.name === "Login" || route.name === "Registration"
+    );
+
     return {
       addTransactionIsOpen,
+      isLoginOrRegisterRoute,
       toggleTransactionModal,
     };
   },
