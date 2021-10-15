@@ -17,7 +17,10 @@
           </div>
           <div class="flex">
             <div class="flex-1"></div>
-            <button class="auth-modal-btn ml-auto">{{ authModalTitle }}</button>
+            <button :disabled="loading" class="auth-modal-btn ml-auto">
+              <span v-show="!loading">{{ authModalTitle }}</span>
+              <Loading v-show="loading" :scale="0.6" :height="'14px'" />
+            </button>
           </div>
           <div class="auth-modal__text">
             {{ authModalTextFirst }}
@@ -288,16 +291,35 @@
       </svg>
       <div class="auth-modal__logo-container">My Budget</div>
     </div>
+    <Snackbar
+      @setSnackbar="setSnackbar"
+      :isOpen="snackbarIsOpen"
+      :type="snackbarType"
+      :text="snackbarText"
+    />
   </div>
 </template>
 
 <script>
-import { reactive, computed } from "vue";
-import { useRoute } from "vue-router";
+import { ref, reactive, computed } from "vue";
+import { useStore } from "vuex";
+import { useRoute, useRouter } from "vue-router";
+import Loading from "@/components/Loading";
+import Snackbar from "@/components/Snackbar";
+
 export default {
   name: "LoginPage",
+  components: {
+    Loading,
+    Snackbar,
+  },
   setup() {
     const route = useRoute();
+    const router = useRouter();
+    const store = useStore();
+    const snackbarIsOpen = ref(false);
+    const snackbarText = ref("");
+    const snackbarType = ref("");
 
     const user = reactive({
       email: "",
@@ -328,8 +350,44 @@ export default {
       route.name === "Login" ? "Registration" : "Login"
     );
 
-    const submit = () => {
-      console.log(user);
+    const loading = computed(() => store.getters.loading);
+    const error = computed(() => store.getters.error);
+
+    const submit = async () => {
+      if (user.email && user.password) {
+        if (route.name === "Registration") {
+          await store.dispatch("registration", user);
+          if (!error.value) {
+            router.push({ name: "Transaction" });
+            setSnackbar(false, "", "");
+          } else {
+            if (/weak-password/i.test(error.value)) {
+              setSnackbar(true, "error", "Пароль не должен быть меньше 6 символов");
+              return;
+            }
+            if (/email-already-in-use/i.test(error.value)) {
+              setSnackbar(true, "error", "Аккаунт с таким email существует");
+            }
+            if (/invalid-email/i.test(error.value)) {
+              setSnackbar(true, "error", "Неправильный email");
+            }
+          }
+        } else {
+          await store.dispatch("signIn", user);
+          if (!error.value) {
+            router.push({ name: "Transaction" });
+            setSnackbar(false, "", "");
+          } else {
+            setSnackbar(true, "error", "Не правильный email или пароль");
+          }
+        }
+      }
+    };
+
+    const setSnackbar = (value, type, text) => {
+      snackbarIsOpen.value = value;
+      snackbarText.value = text;
+      snackbarType.value = type;
     };
 
     return {
@@ -339,7 +397,13 @@ export default {
       authModalTextFirst,
       authModalTextLast,
       routeName,
+      snackbarIsOpen,
+      error,
+      loading,
+      snackbarText,
+      snackbarType,
       submit,
+      setSnackbar,
     };
   },
 };
