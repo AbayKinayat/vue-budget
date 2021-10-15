@@ -21,15 +21,14 @@ const firebaseConfig = {
   measurementId: "G-2T5F3NY67P"
 };
 
-const app = createApp(App);
-
-app.use(store);
-app.use(router);
-
 const appFirebase = initializeApp(
   firebaseConfig
 )
 
 getAnalytics(appFirebase);
 
+const app = createApp(App);
+
+app.use(store);
+app.use(router);
 app.mount('#app')

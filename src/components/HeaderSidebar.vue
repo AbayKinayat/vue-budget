@@ -119,6 +119,7 @@
               </svg>
             </router-link>
           </li>
+          <li @click="logout" class="nav-link">Logout</li>
         </ul>
       </nav>
     </header>
@@ -126,8 +127,23 @@
 </template>
 
 <script>
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 export default {
   name: "HeaderSidebar",
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+    const logout = () => {
+      store.dispatch("signOut").then(() => {
+        router.push({ name: "Login" });
+      });
+    };
+
+    return {
+      logout,
+    };
+  },
 };
 </script>
 
