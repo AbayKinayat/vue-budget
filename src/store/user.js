@@ -44,7 +44,7 @@ export default {
         commit("setError", error.message);
       }
     },
-    async signIn({ commit,  }, { email, password }) {
+    async signIn({ commit, }, { email, password }) {
       const auth = getAuth();
       try {
         commit("setLoading", true);
@@ -62,6 +62,10 @@ export default {
     async signOut() {
       const auth = getAuth();
       return signOut(auth);
+    },
+    userLogged({ commit }, payload) {
+      commit("setUser", payload.uid);
+      console.log("User logged: ", payload.uid);
     },
   }
 }

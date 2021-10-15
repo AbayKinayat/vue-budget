@@ -6,9 +6,6 @@ import store from './store'
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import 'firebase/firestore'
-import 'firebase/auth'
-import 'firebase/storage'
-import 'firebase/messaging'
 
 const firebaseConfig = {
   apiKey: "AIzaSyD2XCwOolqHO77ppDDDEnuUxWX5VvR9tcw",
