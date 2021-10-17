@@ -30,11 +30,11 @@
         />
       </svg>
 
-      <div class="capital-card__percent">17%</div>
+      <div class="capital-card__percent">{{ capitalPercent }}%</div>
     </div>
     <div class="capital-card__content">
       <div class="capital-card__title">Капитал</div>
-      <div class="capital-card__money-container">10 000 000</div>
+      <div class="capital-card__money-container">{{ capital }}</div>
     </div>
   </div>
 </template>
@@ -42,6 +42,20 @@
 <script>
 export default {
   name: "CapitalCard",
+  props: {
+    capital: {
+      required: true,
+    },
+    currentCapital: {
+      required: true,
+    },
+  },
+  computed: {
+    capitalPercent() {
+      const result = (100 * this.currentCapital) / this.capital;
+      return result.toFixed(0);
+    },
+  },
 };
 </script>
 

@@ -19,6 +19,8 @@ import FilterBox from "@/components/FilterBox";
 import TransactionList from "@/components/TransactionList";
 import TransactionsChart from "@/components/TransactionsChart";
 import ExchangeRates from "@/components/ExchangeRates";
+import { getAuth } from "firebase/auth";
+
 export default {
   name: "Transaction",
   components: {
@@ -26,6 +28,11 @@ export default {
     TransactionList,
     TransactionsChart,
     ExchangeRates,
+  },
+  mounted() {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    console.log("user: ", user);
   },
 };
 </script>

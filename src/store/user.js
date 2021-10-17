@@ -1,4 +1,5 @@
 import { getAuth, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { getDatabase, ref, set } from "firebase/database";
 
 export default {
   state() {
@@ -29,13 +30,23 @@ export default {
     }
   },
   actions: {
-    async registration({ commit }, { email, password }) {
+    async registration({ commit }, { email, password, name }) {
+      const db = getDatabase();
       const auth = getAuth();
       try {
         commit("setLoading", true);
         commit("setError", null);
 
         const user = await createUserWithEmailAndPassword(auth, email, password);
+        await set(ref(db, 'users/' + user.user.uid), {
+          username: name,
+          email: email,
+          description: null,
+          cash: 0,
+          salary: 0,
+          capital: 0,
+          currentCapital: 0,
+        });
 
         commit("setUser", user.user.uid);
         commit("setLoading", false);
