@@ -36,6 +36,7 @@ export default {
   background-color: $primary-color;
   border-radius: 22px;
   height: 100%;
+  box-shadow: 0px 4px 4px #231C43;
 }
 
 .card__image {

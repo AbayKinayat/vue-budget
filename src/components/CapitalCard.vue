@@ -67,6 +67,7 @@ export default {
 
 .capital-card {
   background-color: $primary-color;
+  box-shadow: 0px 4px 4px #231C43;
   border-radius: 22px;
   padding: 21px;
 }

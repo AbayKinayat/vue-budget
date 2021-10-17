@@ -36,6 +36,12 @@ const routes = [
     beforeEnter: authGuard,
   },
   {
+    path: '/edit-user',
+    name: 'Edit User',
+    component: () => import("@/views/EditUser"),
+    beforeEnter: authGuard,
+  },
+  {
     path: "/login",
     name: "Login",
     component: () => import("@/views/LoginPage"),

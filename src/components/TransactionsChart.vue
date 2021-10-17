@@ -90,6 +90,7 @@ export default {
 
 .transaction__card {
   background-color: $primary-color;
+  box-shadow: 0px 4px 4px #231C43;
 
   margin-bottom: 40px;
   border-radius: 48px;

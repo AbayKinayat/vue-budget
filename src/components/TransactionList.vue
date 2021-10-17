@@ -46,6 +46,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   background: $primary-color;
+  box-shadow: 0px 4px 4px #231C43;
+
   margin-bottom: 20px;
   border-radius: 12px;
   padding: 15px 20px;

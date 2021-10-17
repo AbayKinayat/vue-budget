@@ -104,6 +104,7 @@ export default {
 .date-card {
   width: max-content;
   background-color: $primary-color;
+  box-shadow: 0px 4px 4px #231C43;
 
   margin-bottom: 22px;
   border-radius: 22px;
