@@ -119,8 +119,17 @@ export default {
   },
   watch: {
     isOpen(value) {
+      console.log("proverka");
       if (value) {
-        setTimeout(() => this.$emit("setSnackbar", false, "", ""), 3000);
+        setTimeout(
+          () =>
+            this.$store.dispatch("setSnackbar", {
+              isOpen: false,
+              type: "",
+              text: "",
+            }),
+          3000
+        );
       } else {
         this.$refs.snackbar.classList.remove("active");
       }

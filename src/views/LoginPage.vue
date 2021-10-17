@@ -291,35 +291,24 @@
       </svg>
       <div class="auth-modal__logo-container">My Budget</div>
     </div>
-    <Snackbar
-      @setSnackbar="setSnackbar"
-      :isOpen="snackbarIsOpen"
-      :type="snackbarType"
-      :text="snackbarText"
-    />
   </div>
 </template>
 
 <script>
-import { ref, reactive, computed } from "vue";
+import { reactive, computed } from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import Loading from "@/components/Loading";
-import Snackbar from "@/components/Snackbar";
 
 export default {
   name: "LoginPage",
   components: {
     Loading,
-    Snackbar,
   },
   setup() {
     const route = useRoute();
     const router = useRouter();
     const store = useStore();
-    const snackbarIsOpen = ref(false);
-    const snackbarText = ref("");
-    const snackbarType = ref("");
 
     const user = reactive({
       email: "",
@@ -353,41 +342,63 @@ export default {
     const loading = computed(() => store.getters.loading);
     const error = computed(() => store.getters.error);
 
+    const snackbarText = computed(() => store.getters.snackbarText);
+    const snackbarType = computed(() => store.getters.snackbarType);
+    const snackbarIsOpen = computed(() => store.getters.snackbarIsOpen);
+
     const submit = async () => {
       if (user.email && user.password) {
         if (route.name === "Registration") {
           await store.dispatch("registration", user);
           if (!error.value) {
             router.push({ name: "Transaction" });
-            setSnackbar(false, "", "");
+            store.dispatch("setSnackbar", {
+              isOpen: true,
+              type: "success",
+              text: "Вы успешно зарегистрировались и вошли в систему",
+            });
           } else {
             if (/weak-password/i.test(error.value)) {
-              setSnackbar(true, "error", "Пароль не должен быть меньше 6 символов");
+              store.dispatch("setSnackbar", {
+                isOpen: true,
+                type: "error",
+                text: "Пароль не должен быть меньше 6 символов",
+              });
               return;
             }
             if (/email-already-in-use/i.test(error.value)) {
-              setSnackbar(true, "error", "Аккаунт с таким email существует");
+              store.dispatch("setSnackbar", {
+                isOpen: true,
+                type: "error",
+                text: "Аккаунт с таким email существует",
+              });
             }
             if (/invalid-email/i.test(error.value)) {
-              setSnackbar(true, "error", "Неправильный email");
+              store.dispatch("setSnackbar", {
+                isOpen: true,
+                type: "error",
+                text: "Неправильный email",
+              });
             }
           }
         } else {
           await store.dispatch("signIn", user);
           if (!error.value) {
             router.push({ name: "Transaction" });
-            setSnackbar(false, "", "");
+            store.dispatch("setSnackbar", {
+              isOpen: true,
+              type: "success",
+              text: "Вы успешно вошли в систему",
+            });
           } else {
-            setSnackbar(true, "error", "Не правильный email или пароль");
+            store.dispatch("setSnackbar", {
+              isOpen: true,
+              type: "error",
+              text: "Не правильный email или пароль",
+            });
           }
         }
       }
-    };
-
-    const setSnackbar = (value, type, text) => {
-      snackbarIsOpen.value = value;
-      snackbarText.value = text;
-      snackbarType.value = type;
     };
 
     return {
@@ -403,7 +414,6 @@ export default {
       snackbarText,
       snackbarType,
       submit,
-      setSnackbar,
     };
   },
 };

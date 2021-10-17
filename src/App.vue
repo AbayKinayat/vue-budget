@@ -17,16 +17,16 @@
       :text="snackbarText"
       :type="snackbarType"
       :isOpen="snackbarIsOpen"
-      @setSnackbar="setSnackbar"
     />
   </div>
 </template>
 
 <script>
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import HeaderSidebar from "@/components/HeaderSidebar";
 import addTransactionModal from "@/components/addTransactionModal";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { ref, computed } from "vue";
+import { useStore } from "vuex";
 import { useRoute } from "vue-router";
 import Snackbar from "@/components/Snackbar";
 export default {
@@ -36,33 +36,39 @@ export default {
     Snackbar,
   },
   setup() {
+    const route = useRoute();
+    const store = useStore();
     const auth = getAuth();
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setSnackbar(true, "success", "You are successfully logged in");
+        store.dispatch("setSnackbar", {
+          isOpen: true,
+          text: "Вы успешно вошли в систему",
+          type: "success",
+        });
+      } else {
+        store.dispatch("setSnackbar", {
+          isOpen: true,
+          text: "Вы не вошли в систему",
+          type: "warning",
+        });
       }
     });
 
     const addTransactionIsOpen = ref(false);
-    const snackbarIsOpen = ref(false);
-    const snackbarType = ref("");
-    const snackbarText = ref("");
-    const route = useRoute();
-
-    function toggleTransactionModal() {
-      addTransactionIsOpen.value = !addTransactionIsOpen.value;
-    }
 
     const isLoginOrRegisterRoute = computed(
       () => route.name === "Login" || route.name === "Registration"
     );
 
-    const setSnackbar = (value, type, text) => {
-      snackbarIsOpen.value = value;
-      snackbarType.value = type;
-      snackbarText.value = text;
-    };
+    const snackbarText = computed(() => store.getters.snackbarText);
+    const snackbarType = computed(() => store.getters.snackbarType);
+    const snackbarIsOpen = computed(() => store.getters.snackbarIsOpen);
+
+    function toggleTransactionModal() {
+      addTransactionIsOpen.value = !addTransactionIsOpen.value;
+    }
 
     return {
       addTransactionIsOpen,
@@ -71,7 +77,6 @@ export default {
       snackbarType,
       snackbarIsOpen,
       toggleTransactionModal,
-      setSnackbar,
     };
   },
 };

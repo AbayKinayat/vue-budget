@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import transactions from './transactions';
 import user from './user';
+import snackbar from './snackbar';
 
 export default createStore({
   state: {
@@ -12,5 +13,6 @@ export default createStore({
   modules: {
     transactions,
     user,
+    snackbar,
   }
 })

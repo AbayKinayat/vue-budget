@@ -137,6 +137,11 @@ export default {
     const logout = () => {
       store.dispatch("signOut").then(() => {
         router.push({ name: "Login" });
+        store.dispatch("setSnackbar", {
+          isOpen: true,
+          text: "Вы вышли из системы",
+          type: "warning",
+        });
       });
     };
 
