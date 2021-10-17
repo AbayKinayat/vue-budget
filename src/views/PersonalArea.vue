@@ -1,4 +1,5 @@
 <template>
+  <PageLoading v-show="!userData" />
   <div v-if="userData">
     <h1 class="section-title">Личный кабинет</h1>
     <div class="personal-area__content">
@@ -22,6 +23,7 @@ import UserCard from "@/components/UserCard";
 import DateCard from "@/components/DateCard";
 import SalaryHistory from "@/components/SalaryHistory";
 import CapitalCard from "@/components/CapitalCard";
+import PageLoading from "@/components/PageLoading";
 import { getAuth } from "firebase/auth";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { ref as vueref } from "vue";
@@ -33,6 +35,7 @@ export default {
     DateCard,
     SalaryHistory,
     CapitalCard,
+    PageLoading,
   },
   setup() {
     const auth = getAuth();
