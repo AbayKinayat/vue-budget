@@ -45,6 +45,7 @@ export default {
   background-color: $primary-color;
   border-radius: 22px;
   overflow: hidden;
+  box-shadow: 0px 4px 4px #231C43;
 
   margin-bottom: 8px;
   padding: 20px;
@@ -73,6 +74,7 @@ export default {
   background: $primary-color;
   border: 1px solid $purple-border-color;
   border-radius: 22px;
+  box-shadow: 0px 4px 4px #231C43;
 
   margin-bottom: 8px;
   padding: 20px;

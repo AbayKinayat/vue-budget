@@ -64,6 +64,7 @@ export default {
   width: max-content;
   background: $primary-color;
   border-radius: 12px;
+  box-shadow: 0px 4px 4px #231C43;
 
   margin-bottom: 20px;
   padding: 8px 11px;

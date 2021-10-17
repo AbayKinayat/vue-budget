@@ -121,6 +121,7 @@ export default {
 
 .exchange-rate__wrapper {
   max-width: 493px;
+  box-shadow: 0px 4px 4px #231C43;
 }
 
 .exchange-rate__item {
@@ -128,6 +129,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   background-color: $primary-inner-color;
+  box-shadow: 0px 4px 4px #231C43;
 
   margin-bottom: 15px;
   border-radius: 23px;
