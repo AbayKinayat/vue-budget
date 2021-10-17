@@ -53,7 +53,10 @@ export default {
   computed: {
     capitalPercent() {
       const result = (100 * this.currentCapital) / this.capital;
-      return result.toFixed(0);
+      if (result) {
+        return result.toFixed(0);
+      }
+      return 0;
     },
   },
 };

@@ -1,5 +1,8 @@
 <template>
-  <div class="date-card flex justify-between align-center">
+  <div
+    v-if="hour && minute && second"
+    class="date-card flex justify-between align-center"
+  >
     <div class="date-card__icon-container">
       <svg
         width="42"
@@ -28,15 +31,70 @@
       </svg>
     </div>
     <div class="date-card__content">
-      <div class="date-card__title">17:07:20</div>
-      <div class="date-card__subtitle">25 Апр 2022 Среда</div>
+      <div class="date-card__title">{{ hour }}:{{ minute }}:{{ second }}</div>
+      <div class="date-card__subtitle">
+        {{ day }} {{ month }} {{ year }} {{ weekDay }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { ref, computed, onUnmounted } from "vue";
 export default {
   name: "DateCard",
+  setup() {
+    const currentDate = new Date();
+    const hour = ref(currentDate.getHours());
+    const minute = ref(currentDate.getMinutes());
+    const second = ref(currentDate.getSeconds());
+    const year = ref(currentDate.getFullYear());
+    const month = ref(currentDate.toLocaleString("default", { month: "long" }));
+    const day = ref(currentDate.getDate());
+    const timeInterval = setInterval(() => {
+      const date = new Date();
+      hour.value = date.getHours();
+      minute.value = date.getMinutes();
+      second.value = date.getSeconds();
+      if (hour.value < 10) {
+        hour.value = `0${hour.value}`;
+      }
+      if (minute.value < 10) {
+        minute.value = `0${minute.value}`;
+      }
+      if (second.value < 10) {
+        second.value = `0${second.value}`;
+      }
+    }, 1000);
+
+    onUnmounted(() => {
+      clearInterval(timeInterval);
+    });
+
+    const weekDay = computed(() => {
+      const days = [
+        "Воскресенье",
+        "Понедельник",
+        "Вторник",
+        "Среда",
+        "Четсерг",
+        "Пятница",
+        "Суббота",
+      ];
+
+      return days[currentDate.getDay()];
+    });
+
+    return {
+      hour,
+      minute,
+      second,
+      year,
+      month,
+      day,
+      weekDay,
+    };
+  },
 };
 </script>
 
