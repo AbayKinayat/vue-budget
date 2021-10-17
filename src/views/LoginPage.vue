@@ -7,6 +7,10 @@
           {{ authModalSubtitle }}
         </div>
         <form @submit.prevent="submit" ref="form">
+          <div v-show="authModalRegister" class="form-group circle">
+            <label for="name">Ваш имя</label>
+            <input v-model="user.name" id="name" type="text" />
+          </div>
           <div class="form-group circle">
             <label for="email">Ваш email</label>
             <input v-model="user.email" id="email" type="text" />
@@ -313,6 +317,7 @@ export default {
     const user = reactive({
       email: "",
       password: "",
+      name: "",
     });
 
     const authModalTitle = computed(() =>
@@ -334,6 +339,10 @@ export default {
     const authModalTextLast = computed(() =>
       route.name === "Login" ? "Создайте аккаунт" : "Войдите в аккаунт"
     );
+
+    const authModalRegister = computed(() => {
+      return route.name === "Registration";
+    });
 
     const routeName = computed(() =>
       route.name === "Login" ? "Registration" : "Login"
@@ -407,6 +416,7 @@ export default {
       authModalSubtitle,
       authModalTextFirst,
       authModalTextLast,
+      authModalRegister,
       routeName,
       snackbarIsOpen,
       error,

@@ -1,29 +1,24 @@
 <template>
   <div class="user-info">
     <div class="user-card">
-      <div class="flex align-center">
-        <img
-          src="../assets/images/user.jpg"
-          alt="User Avatar"
-          class="user-card__avatar"
-        />
-        <span>Закарин Адиль</span>
+      <div>
+          <span>{{ user.username }}</span><br />
+          <small>{{ user.email }}</small>
       </div>
       <div class="user-card__body">
         <div class="user-card__label">О себе</div>
         <p class="user-card__subtitle">
-          Я мидл фронтедн программист. Живу в своей квартире в Астане. Я не
-          желаю и не надеюсь. Я намерен.
+          {{ user.description || "Нет информации" }}
         </p>
       </div>
     </div>
     <div class="user-info__item flex justify-between align-center">
       <div>Счет</div>
-      <div>5 000 000 тг</div>
+      <div>{{ user.cash }} тг</div>
     </div>
     <div class="user-info__item flex justify-between align-center">
       <div>Зарплата</div>
-      <div>1 000 000 тг</div>
+      <div>{{ user.salary }} тг</div>
     </div>
   </div>
 </template>
@@ -31,6 +26,12 @@
 <script>
 export default {
   name: "UserCard",
+  props: {
+    user: {
+      type: Object,
+      required: true,
+    },
+  },
 };
 </script>
 
@@ -45,7 +46,7 @@ export default {
   border-radius: 22px;
   overflow: hidden;
 
-margin-bottom: 8px;
+  margin-bottom: 8px;
   padding: 20px;
 }
 
@@ -72,7 +73,7 @@ margin-bottom: 8px;
   background: $primary-color;
   border: 1px solid $purple-border-color;
   border-radius: 22px;
-  
+
   margin-bottom: 8px;
   padding: 20px;
 }
