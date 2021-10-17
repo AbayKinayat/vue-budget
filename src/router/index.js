@@ -8,7 +8,7 @@ const authGuard = function (to, from, next) {
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      store.dispatch("userLogged", user);
+      store.dispatch("userLogged", user.uid);
       next()
     } else {
       next("/login")

@@ -64,8 +64,8 @@ export default {
       return signOut(auth);
     },
     userLogged({ commit }, payload) {
-      commit("setUser", payload.uid);
-      console.log("User logged: ", payload.uid);
+      commit("setUser", payload);
+      console.log("User logged: ", payload);
     },
   }
 }

@@ -13,21 +13,41 @@
         :isOpen="addTransactionIsOpen"
       />
     </template>
+    <Snackbar
+      :text="snackbarText"
+      :type="snackbarType"
+      :isOpen="snackbarIsOpen"
+      @setSnackbar="setSnackbar"
+    />
   </div>
 </template>
 
 <script>
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import HeaderSidebar from "@/components/HeaderSidebar";
 import addTransactionModal from "@/components/addTransactionModal";
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
+import Snackbar from "@/components/Snackbar";
 export default {
   components: {
     HeaderSidebar,
     addTransactionModal,
+    Snackbar,
   },
   setup() {
+    const auth = getAuth();
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setSnackbar(true, "success", "You are successfully logged in");
+      }
+    });
+
     const addTransactionIsOpen = ref(false);
+    const snackbarIsOpen = ref(false);
+    const snackbarType = ref("");
+    const snackbarText = ref("");
     const route = useRoute();
 
     function toggleTransactionModal() {
@@ -38,10 +58,20 @@ export default {
       () => route.name === "Login" || route.name === "Registration"
     );
 
+    const setSnackbar = (value, type, text) => {
+      snackbarIsOpen.value = value;
+      snackbarType.value = type;
+      snackbarText.value = text;
+    };
+
     return {
       addTransactionIsOpen,
       isLoginOrRegisterRoute,
+      snackbarText,
+      snackbarType,
+      snackbarIsOpen,
       toggleTransactionModal,
+      setSnackbar,
     };
   },
 };
@@ -55,6 +85,7 @@ export default {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -o-box-sizing: border-box;
+  cursor: url("./assets/images/cursor2.svg"), auto;
 }
 
 body {
