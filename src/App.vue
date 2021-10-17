@@ -90,7 +90,7 @@ export default {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -o-box-sizing: border-box;
-  cursor: url("./assets/images/cursor2.svg"), auto;
+  // cursor: url("./assets/images/cursor2.svg"), auto;
 }
 
 body {
