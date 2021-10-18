@@ -2,8 +2,8 @@
   <ul>
     <li
       class="transaction__container"
-      v-for="transaction of transactions"
-      :key="transaction.id"
+      v-for="transaction in transactions"
+      :key="transaction.title"
     >
       <div>
         <h4 class="transaction__title">
@@ -15,9 +15,9 @@
       </div>
       <div
         class="transaction__cash"
-        :class="{ expense: transaction.expense, income: !transaction.expense }"
+        :class="{ income: transaction.income, expense: !transaction.income }"
       >
-        {{ transaction.expense ? "+ " : "- " }} {{ transaction.cash }}
+        {{ transaction.income ? "+ " : "- " }} {{ transaction.cash }}
       </div>
     </li>
   </ul>
@@ -25,12 +25,13 @@
 
 <script>
 import { useStore } from "vuex";
+import { computed } from "vue";
 export default {
   name: "TransactionList",
   setup() {
     const store = useStore();
 
-    const transactions = store.getters.transactions;
+    const transactions = computed(() => store.getters.transactions);
 
     return {
       transactions,
@@ -46,7 +47,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   background: $primary-color;
-  box-shadow: 0px 4px 4px #231C43;
+  box-shadow: 0px 4px 4px #231c43;
 
   margin-bottom: 20px;
   border-radius: 12px;
@@ -65,11 +66,11 @@ export default {
   color: $small-color;
 }
 
-.expense {
+.income {
   color: $success-color;
 }
 
-.income {
+.expense {
   color: $danger-color;
 }
 </style>

@@ -12,7 +12,7 @@ import { useStore } from "vuex";
 
 Chart.register(...registerables);
 Chart.defaults.color = "#7C70B2";
-Chart.defaults.borderColor	= "#7C70B2"
+Chart.defaults.borderColor = "#7C70B2";
 
 export default {
   name: "TransactionsChart",
@@ -27,20 +27,22 @@ export default {
 
     const transactionsDates = ref([]);
 
-    const transactions = store.getters.transactions;
+    const transactions = computed(() => store.getters.transactions);
+    console.log(transactions.value)
 
-    transactions.map((transaction) => {
-      let cash = transaction.cash;
-      let date = transaction.date;
+    for (let key in transactions.value) {
+      console.log(key)
+      let cash = transactions.value[key].cash;
+      let date = transactions.value[key].date;
 
-      if (!transaction.expense) {
-        cash = transaction.cash - transaction.cash * 2;
+      if (transactions.value[key].income) {
         transactionsIncomeCash.value.push({ x: date, y: cash });
       } else {
+        cash = transactions.value[key].cash - transactions.value[key].cash * 2;
         transactionsExpenseCash.value.push({ x: date, y: cash });
       }
       transactionsDates.value.push(date);
-    });
+    }
 
     const options = ref({
       responsive: true,
@@ -66,15 +68,15 @@ export default {
       labels: transactionsDates.value,
       datasets: [
         {
-          label: "Расход",
+          label: "Доход",
           data: transactionsIncomeCash.value,
-          backgroundColor: "#FF7070",
+          backgroundColor: "#A0E630",
           stack: "das",
         },
         {
-          label: "Доход",
+          label: "Расход",
           data: transactionsExpenseCash.value,
-          backgroundColor: "#A0E630",
+          backgroundColor: "#FF7070",
           stack: "das",
         },
       ],
@@ -90,7 +92,7 @@ export default {
 
 .transaction__card {
   background-color: $primary-color;
-  box-shadow: 0px 4px 4px #231C43;
+  box-shadow: 0px 4px 4px #231c43;
 
   margin-bottom: 40px;
   border-radius: 48px;
