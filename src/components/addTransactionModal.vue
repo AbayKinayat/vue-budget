@@ -11,15 +11,15 @@
     </div>
     <div class="tab-container">
       <div
-        @click="expenseHandler(true)"
-        :class="{ active: transaction.expense }"
+        @click="incomeHandler(true)"
+        :class="{ active: transaction.income }"
         class="tab-item"
       >
         Добавить доход
       </div>
       <div
-        @click="expenseHandler(false)"
-        :class="{ active: !transaction.expense }"
+        @click="incomeHandler(false)"
+        :class="{ active: !transaction.income }"
         class="tab-item"
       >
         Добавить расход
@@ -28,8 +28,8 @@
     <div class="modal__body">
       <form @submit.prevent="submit" ref="form">
         <div class="form-group">
-          <label for="name">Введите данные</label>
-          <input v-model="transaction.name" id="name" type="text" />
+          <label for="title">Введите данные</label>
+          <input v-model="transaction.title" id="title" type="text" />
         </div>
         <div class="form-group">
           <label for="cash">{{ cashLabel }}</label>
@@ -49,7 +49,9 @@
 </template>
 
 <script>
+import { getAuth } from "firebase/auth";
 import { reactive, computed } from "vue";
+import { useStore } from "vuex";
 export default {
   name: "addTransactionModal",
   props: {
@@ -60,31 +62,48 @@ export default {
   },
   emits: ["closeModal"],
   setup() {
+    const store = useStore();
     const transaction = reactive({
-      name: "",
+      title: "",
       cash: "",
       date: "",
-      expense: true,
+      income: true,
     });
 
     const cashLabel = computed(() =>
-      transaction.expense
+      transaction.income
         ? "Введите количество заработанных денег"
         : "Введите количество потраченных денег"
     );
 
-    const expenseHandler = (condition) => {
-      transaction.expense = condition;
+    const incomeHandler = (condition) => {
+      transaction.income = condition;
     };
 
-    const submit = () => {
-      console.log(transaction);
+    const submit = async () => {
+      const auth = getAuth();
+      var validated = true;
+      for (let key in transaction) {
+        if (key !== "income" && !transaction[key]) {
+          validated = false;
+        }
+      }
+      if (validated) {
+        await store.dispatch("addTransaction", {
+          ...transaction,
+          user_uid: auth.currentUser.uid,
+        });
+        for (let key in transaction) {
+          transaction[key] = "";
+        }
+        transaction.income = true;
+      }
     };
 
     return {
       transaction,
       submit,
-      expenseHandler,
+      incomeHandler,
       cashLabel,
     };
   },

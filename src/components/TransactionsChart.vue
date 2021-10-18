@@ -22,27 +22,77 @@ export default {
   setup() {
     const store = useStore();
 
-    const transactionsExpenseCash = ref([]);
-    const transactionsIncomeCash = ref([]);
-
-    const transactionsDates = ref([]);
-
     const transactions = computed(() => store.getters.transactions);
-    console.log(transactions.value)
-
-    for (let key in transactions.value) {
-      console.log(key)
-      let cash = transactions.value[key].cash;
-      let date = transactions.value[key].date;
-
-      if (transactions.value[key].income) {
-        transactionsIncomeCash.value.push({ x: date, y: cash });
-      } else {
-        cash = transactions.value[key].cash - transactions.value[key].cash * 2;
-        transactionsExpenseCash.value.push({ x: date, y: cash });
+    const transactionsIncomeCash = computed(() => {
+      let allIncome = [];
+      for (let key in transactions.value) {
+        let date = transactions.value[key].date;
+        let cash = transactions.value[key].cash;
+        if (transactions.value[key].income) {
+          allIncome.push({ x: date, y: cash });
+        }
       }
-      transactionsDates.value.push(date);
-    }
+
+      const unique = [...new Set(allIncome.map((a) => a.x))];
+
+      let allIncomeFinal = [];
+
+      unique.map((item) => {
+        let allCash = 0;
+        let cashDate = "";
+        for (let key in transactions.value) {
+          let date = transactions.value[key].date;
+          let cash = transactions.value[key].cash;
+          if (item === date) {
+            cashDate = date;
+            allCash += +cash;
+          }
+        }
+        allIncomeFinal.push({ x: cashDate, y: allCash });
+      });
+
+      return allIncomeFinal;
+    });
+    const transactionsExpenseCash = computed(() => {
+      let allExpanse = [];
+      for (let key in transactions.value) {
+        let date = transactions.value[key].date;
+        let cash = transactions.value[key].cash;
+        if (!transactions.value[key].income) {
+          allExpanse.push({ x: date, y: cash });
+        }
+      }
+
+      const unique = [...new Set(allExpanse.map((a) => a.x))];
+
+      let allExpanseFinal = [];
+
+      unique.map((item) => {
+        let allCash = 0;
+        let cashDate = "";
+        for (let key in transactions.value) {
+          let date = transactions.value[key].date;
+          let cash = transactions.value[key].cash;
+          if (item === date) {
+            cashDate = date;
+            allCash -= +cash;
+          }
+        }
+        allExpanseFinal.push({ x: cashDate, y: allCash });
+      });
+
+      return allExpanseFinal;
+    });
+    const transactionsDates = computed(() => {
+      const dates = [];
+      for (let key in transactions.value) {
+        dates.push(transactions.value[key].date);
+      }
+
+      const allDates = [...new Set(dates.map((a) => a))];
+
+      return allDates;
+    });
 
     const options = ref({
       responsive: true,
