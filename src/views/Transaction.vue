@@ -1,17 +1,20 @@
 <template>
-  <div>
-    <h1 class="section-title">Транзакции</h1>
-  </div>
-  <div class="flex justify-between">
-    <div class="transactions_left">
-      <FilterBox />
-      <TransactionList />
+  <PageLoading v-show="loading" />
+  <template v-if="!loading">
+    <div>
+      <h1 class="section-title">Транзакции</h1>
     </div>
-    <div class="transactions_right">
-      <TransactionsChart />
-      <ExchangeRates />
+    <div class="flex justify-between">
+      <div class="transactions_left">
+        <FilterBox />
+        <TransactionList />
+      </div>
+      <div class="transactions_right">
+        <TransactionsChart />
+        <ExchangeRates />
+      </div>
     </div>
-  </div>
+  </template>
 </template>
 
 <script>
@@ -19,7 +22,9 @@ import FilterBox from "@/components/FilterBox";
 import TransactionList from "@/components/TransactionList";
 import TransactionsChart from "@/components/TransactionsChart";
 import ExchangeRates from "@/components/ExchangeRates";
-import { getAuth } from "firebase/auth";
+import PageLoading from "@/components/PageLoading";
+import { computed } from "vue";
+import { useStore } from "vuex";
 
 export default {
   name: "Transaction",
@@ -28,11 +33,15 @@ export default {
     TransactionList,
     TransactionsChart,
     ExchangeRates,
+    PageLoading,
   },
-  mounted() {
-    const auth = getAuth();
-    const user = auth.currentUser;
-    console.log("user: ", user);
+  setup() {
+    const store = useStore();
+
+    store.dispatch("getTransactions");
+    const loading = computed(() => store.getters.transactionsLoading);
+
+    return { loading };
   },
 };
 </script>

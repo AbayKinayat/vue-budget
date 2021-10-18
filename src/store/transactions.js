@@ -1,60 +1,47 @@
+import { getDatabase, set, ref, push, child, onValue } from "firebase/database";
+
+
 export default {
   state: {
-    transactions: [
-      {
-        id: 1,
-        title: "Хлеб",
-        date: "07/20",
-        expense: false,
-        cash: "115",
-      },
-      {
-        id: 2,
-        title: "Долг",
-        date: "07/21",
-        expense: true,
-        cash: "2000",
-      },
-      {
-        id: 3,
-        title: "Пицца кола",
-        date: "07/25",
-        expense: false,
-        cash: "1500",
-      },
-      {
-        id: 4,
-        title: "Такси",
-        date: "08/03",
-        expense: false,
-        cash: "2000",
-      },
-      {
-        id: 5,
-        title: "Диван",
-        date: "08/13",
-        expense: false,
-        cash: "20000",
-      },
-      {
-        id: 6,
-        title: "Зарплата",
-        date: "08/16",
-        expense: true,
-        cash: "10000",
-      },
-    ],
+    transactions: [],
+    transactionsLoading: false,
   },
 
   getters: {
     transactions: (state) => state.transactions,
+    transactionsLoading: (state) => state.transactionsLoading,
   },
 
   mutations: {
-
+    setTransactions(state, payload) {
+      state.transactions = payload;
+    },
+    setTransactionsLoading(state, payload) {
+      state.transactionsLoading = payload;
+    }
   },
 
   actions: {
+    getTransactions({ commit }) {
+      const db = getDatabase();
+      commit("setTransactionsLoading", true);
 
+      const transactionRef = ref(db, "transactions");
+
+      onValue(transactionRef, (snapshot) => {
+        const transactions = snapshot.val();
+        commit("setTransactions", transactions);
+        commit("setTransactionsLoading", false);
+      });
+    },
+    async addTransaction({ commit }, payload) {
+      const db = getDatabase();
+      commit("setTransactionsLoading", true);
+
+      const transactionKey = push(child(ref(db), "transactions")).key;
+
+      await set(ref(db, "transactions/" + transactionKey), payload)
+      commit("setTransactionsLoading", false);
+    }
   }
 }
