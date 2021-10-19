@@ -43,7 +43,7 @@ export default {
         for (let key in transactions.value) {
           let date = transactions.value[key].date;
           let cash = transactions.value[key].cash;
-          if (item === date) {
+          if (transactions.value[key].income && item === date) {
             cashDate = date;
             allCash += +cash;
           }
@@ -73,7 +73,7 @@ export default {
         for (let key in transactions.value) {
           let date = transactions.value[key].date;
           let cash = transactions.value[key].cash;
-          if (item === date) {
+          if (!transactions.value[key].income && item === date) {
             cashDate = date;
             allCash -= +cash;
           }

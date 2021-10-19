@@ -61,7 +61,7 @@ export default {
     },
   },
   emits: ["closeModal"],
-  setup() {
+  setup(props, { emit }) {
     const store = useStore();
     const transaction = reactive({
       title: "",
@@ -82,21 +82,37 @@ export default {
 
     const submit = async () => {
       const auth = getAuth();
+      // Submit validation
       var validated = true;
       for (let key in transaction) {
         if (key !== "income" && !transaction[key]) {
           validated = false;
         }
       }
+      // if validated add Transaction
       if (validated) {
         await store.dispatch("addTransaction", {
           ...transaction,
           user_uid: auth.currentUser.uid,
         });
+        store.dispatch("setSnackbar", {
+          isOpen: true,
+          type: "success",
+          text: transaction.income
+            ? "Вы успешно добавили доходную транзакцию"
+            : "Вы успешно добавили расходную транзакцию",
+        });
         for (let key in transaction) {
           transaction[key] = "";
         }
         transaction.income = true;
+        emit("closeModal");
+      } else {
+        store.dispatch("setSnackbar", {
+          isOpen: true,
+          type: "warning",
+          text: "Заполните форму для того что бы добавить транзакцию",
+        });
       }
     };
 
