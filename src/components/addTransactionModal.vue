@@ -7,7 +7,7 @@
   <div class="modal" :class="{ active: isOpen }">
     <div class="modal__header">
       <div class="modal__title">Добавить транзакцию</div>
-      <p class="modal__subtitle">Заполните форму что бы добавить транзацию</p>
+      <p class="modal__subtitle">Заполните форму что бы добавить транзакцию</p>
     </div>
     <div class="tab-container">
       <div

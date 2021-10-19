@@ -1,4 +1,4 @@
-import { getDatabase, set, ref, push, child, onValue } from "firebase/database";
+import { getDatabase, set, ref, push, child, onValue, update } from "firebase/database";
 
 
 export default {
@@ -41,6 +41,15 @@ export default {
       const transactionKey = push(child(ref(db), "transactions")).key;
 
       await set(ref(db, "transactions/" + transactionKey), payload)
+      commit("setTransactionsLoading", false);
+    },
+    async updateTransaction({ commit }, { transaction, transactionId }) {
+      const db = getDatabase();
+      const transactionRef = ref(db, "transactions/" + transactionId);
+      commit("setTransactionsLoading", true);
+
+      await update(transactionRef, transaction)
+
       commit("setTransactionsLoading", false);
     }
   }

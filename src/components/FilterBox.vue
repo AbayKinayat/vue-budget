@@ -2,7 +2,10 @@
   <div class="filter-box">
     <button class="filter-btn">Доход</button>
     <button class="filter-btn">Расход</button>
-    <button class="edit-btn filter-edit-btn">
+    <button
+      @click="$emit('showEditBtnHandler')"
+      class="edit-btn filter-edit-btn"
+    >
       <svg
         width="18"
         height="18"
@@ -24,7 +27,7 @@
         />
       </svg>
     </button>
-    <button class="delete-btn">
+    <button @click="$emit('showDeleteBtnHandler')" class="delete-btn">
       <svg
         width="18"
         height="18"
@@ -52,6 +55,7 @@
 <script>
 export default {
   name: "FilterBox",
+  emits: ["showEditBtnHandler", "showDeleteBtnHandler"],
 };
 </script>
 
@@ -64,7 +68,7 @@ export default {
   width: max-content;
   background: $primary-color;
   border-radius: 12px;
-  box-shadow: 0px 4px 4px #231C43;
+  box-shadow: 0px 4px 4px #231c43;
 
   margin-bottom: 20px;
   padding: 8px 11px;
@@ -97,6 +101,8 @@ export default {
 }
 
 .edit-btn {
+  width: 30px;
+  height: 28px;
   background: $active-color;
   border-radius: 50%;
 
@@ -104,6 +110,8 @@ export default {
 }
 
 .delete-btn {
+  width: 30px;
+  height: 28px;
   background: $danger-color;
   border-radius: 50%;
 
