@@ -6,14 +6,27 @@
     </div>
     <div class="flex justify-between">
       <div class="transactions_left">
-        <FilterBox />
-        <TransactionList />
+        <FilterBox
+          @showEditBtnHandler="showEditBtnHandler"
+          @showDeleteBtnHandler="showDeleteBtnHandler"
+        />
+        <TransactionList
+          :showEditBtn="showEditBtn"
+          :showDeleteBtn="showDeleteBtn"
+          @editTransactionOpenModal="editTransactionOpenModal"
+        />
       </div>
       <div class="transactions_right">
         <TransactionsChart />
         <ExchangeRates />
       </div>
     </div>
+    <EditTransactionModal
+      v-if="editTransactionIsOpen"
+      @closeModal="editTransactionCloseModal"
+      :isOpen="editTransactionIsOpen"
+      :transactionId="transactionId"
+    />
   </template>
 </template>
 
@@ -23,7 +36,8 @@ import TransactionList from "@/components/TransactionList";
 import TransactionsChart from "@/components/TransactionsChart";
 import ExchangeRates from "@/components/ExchangeRates";
 import PageLoading from "@/components/PageLoading";
-import { computed } from "vue";
+import EditTransactionModal from "@/components/EditTransactionModal";
+import { computed, ref } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -34,14 +48,45 @@ export default {
     TransactionsChart,
     ExchangeRates,
     PageLoading,
+    EditTransactionModal,
   },
   setup() {
     const store = useStore();
+    const showEditBtn = ref(false);
+    const showDeleteBtn = ref(false);
+    const editTransactionIsOpen = ref(false);
+    const transactionId = ref("");
 
     store.dispatch("getTransactions");
     const loading = computed(() => store.getters.transactionsLoading);
 
-    return { loading };
+    const editTransactionCloseModal = () => {
+      editTransactionIsOpen.value = false;
+    };
+    const editTransactionOpenModal = (id) => {
+      editTransactionIsOpen.value = true;
+      transactionId.value = id;
+    };
+
+    const showEditBtnHandler = () => {
+      showEditBtn.value = !showEditBtn.value;
+    };
+
+    const showDeleteBtnHandler = () => {
+      showDeleteBtn.value = !showDeleteBtn.value;
+    };
+
+    return {
+      loading,
+      showEditBtn,
+      showDeleteBtn,
+      editTransactionIsOpen,
+      transactionId,
+      showEditBtnHandler,
+      showDeleteBtnHandler,
+      editTransactionCloseModal,
+      editTransactionOpenModal,
+    };
   },
 };
 </script>
