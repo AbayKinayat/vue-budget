@@ -1,4 +1,4 @@
-import { getDatabase, set, ref, push, child, onValue, update } from "firebase/database";
+import { getDatabase, set, ref, push, child, onValue, update, remove } from "firebase/database";
 
 
 export default {
@@ -50,6 +50,14 @@ export default {
 
       await update(transactionRef, transaction)
 
+      commit("setTransactionsLoading", false);
+    },
+    async deleteTransaction({ commit }, transactionId) {
+      const db = getDatabase();
+      const transactionRef = ref(db, "transactions/" + transactionId);
+      commit("setTransactionsLoading", true);
+
+      await remove(transactionRef);
       commit("setTransactionsLoading", false);
     }
   }

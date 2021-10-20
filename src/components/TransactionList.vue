@@ -23,7 +23,11 @@
         class="edit-transaction"
         :class="{ active: showEditBtn || showDeleteBtn }"
       >
-        <button class="delete-btn delete" :class="{ active: showDeleteBtn }">
+        <button
+          @click="$emit('deleteTransaction', key)"
+          class="delete-btn delete"
+          :class="{ active: showDeleteBtn }"
+        >
           <svg
             width="18"
             height="18"
@@ -81,7 +85,7 @@ import { useStore } from "vuex";
 import { computed } from "vue";
 export default {
   name: "TransactionList",
-  emits: ["editTransactionOpenModal"],
+  emits: ["editTransactionOpenModal", "deleteTransaction"],
   props: {
     showEditBtn: {
       type: Boolean,
