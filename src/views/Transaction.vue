@@ -1,33 +1,39 @@
 <template>
   <PageLoading v-show="loading" />
-  <template v-if="!loading">
-    <div>
-      <h1 class="section-title">Транзакции</h1>
-    </div>
-    <div class="flex justify-between">
-      <div class="transactions_left">
-        <FilterBox
-          @showEditBtnHandler="showEditBtnHandler"
-          @showDeleteBtnHandler="showDeleteBtnHandler"
-        />
-        <TransactionList
-          :showEditBtn="showEditBtn"
-          :showDeleteBtn="showDeleteBtn"
-          @editTransactionOpenModal="editTransactionOpenModal"
-        />
+  <transition
+    enter-active-class="page-enter-active"
+    leave-active-class=".page-enter-leave"
+  >
+    <div v-if="!loading && !pageLoading">
+      <div>
+        <h1 class="section-title">Транзакции</h1>
       </div>
-      <div class="transactions_right">
-        <TransactionsChart />
-        <ExchangeRates />
+      <div class="flex justify-between">
+        <div class="transactions_left">
+          <FilterBox
+            @showEditBtnHandler="showEditBtnHandler"
+            @showDeleteBtnHandler="showDeleteBtnHandler"
+          />
+          <TransactionList
+            :showEditBtn="showEditBtn"
+            :showDeleteBtn="showDeleteBtn"
+            @editTransactionOpenModal="editTransactionOpenModal"
+            @deleteTransaction="deleteTransaction"
+          />
+        </div>
+        <div class="transactions_right">
+          <TransactionsChart />
+          <ExchangeRates />
+        </div>
       </div>
+      <EditTransactionModal
+        v-if="editTransactionIsOpen"
+        @closeModal="editTransactionCloseModal"
+        :isOpen="editTransactionIsOpen"
+        :transactionId="transactionId"
+      />
     </div>
-    <EditTransactionModal
-      v-if="editTransactionIsOpen"
-      @closeModal="editTransactionCloseModal"
-      :isOpen="editTransactionIsOpen"
-      :transactionId="transactionId"
-    />
-  </template>
+  </transition>
 </template>
 
 <script>
@@ -37,7 +43,7 @@ import TransactionsChart from "@/components/TransactionsChart";
 import ExchangeRates from "@/components/ExchangeRates";
 import PageLoading from "@/components/PageLoading";
 import EditTransactionModal from "@/components/EditTransactionModal";
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -56,6 +62,7 @@ export default {
     const showDeleteBtn = ref(false);
     const editTransactionIsOpen = ref(false);
     const transactionId = ref("");
+    const pageLoading = ref(true);
 
     store.dispatch("getTransactions");
     const loading = computed(() => store.getters.transactionsLoading);
@@ -76,16 +83,33 @@ export default {
       showDeleteBtn.value = !showDeleteBtn.value;
     };
 
+    const deleteTransaction = async (transactionId) => {
+      await store.dispatch("deleteTransaction", transactionId);
+      await store.dispatch("setSnackbar", {
+        isOpen: true,
+        type: "success",
+        text: "Вы успешно удалили транзакцию",
+      });
+    };
+
+    onMounted(() => {
+      setTimeout(() => {
+        pageLoading.value = false;
+      }, 10);
+    });
+
     return {
       loading,
       showEditBtn,
       showDeleteBtn,
       editTransactionIsOpen,
       transactionId,
+      pageLoading,
       showEditBtnHandler,
       showDeleteBtnHandler,
       editTransactionCloseModal,
       editTransactionOpenModal,
+      deleteTransaction,
     };
   },
 };
@@ -93,11 +117,27 @@ export default {
 
 <style lang="scss">
 @import "@/scss/_variables.scss";
+
 .transactions_left {
   width: 40%;
 }
 .transactions_right {
   width: 60%;
   padding-left: 40px;
+}
+
+.page-enter-active {
+  animation: page-in .5s;
+}
+.page-leave-active {
+  animation: page-in .5s reverse;
+}
+@keyframes page-in {
+  0% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 </style>

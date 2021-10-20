@@ -1,30 +1,45 @@
 <template>
-  <div>
-    <h1 class="section-title">Бюджет</h1>
-    <h4 class="section-title-two">Активные</h4>
-    <ul class="flex">
-      <div class="card">
-        <img
-          class="card__image"
-          src="../assets/images/card_image.png"
-          alt="test"
-        />
-        <div class="card__body">
-          <div class="flex justify-between">
-            <span class="card__title"> Ноутбук </span>
-            <span class="card__title"> 300 000 </span>
+  <transition
+    enter-active-class="page-enter-active"
+    leave-active-class=".page-enter-leave"
+  >
+    <div v-if="!loading">
+      <h1 class="section-title">Бюджет</h1>
+      <h4 class="section-title-two">Активные</h4>
+      <ul class="flex">
+        <div class="card">
+          <img
+            class="card__image"
+            src="../assets/images/card_image.png"
+            alt="test"
+          />
+          <div class="card__body">
+            <div class="flex justify-between">
+              <span class="card__title"> Ноутбук </span>
+              <span class="card__title"> 300 000 </span>
+            </div>
+            <span class="card__subtitle">Накоплено: 100 000</span>
+            <div class="budget__percent_circle">33.3%</div>
           </div>
-          <span class="card__subtitle">Накоплено: 100 000</span>
-          <div class="budget__percent_circle">33.3%</div>
         </div>
-      </div>
-    </ul>
-  </div>
+      </ul>
+    </div>
+  </transition>
 </template>
 
 <script>
 export default {
   name: "Budget",
+  data() {
+    return {
+      loading: true,
+    };
+  },
+  mounted() {
+    setTimeout(() => {
+      this.loading = false;
+    }, 10);
+  },
 };
 </script>
 
@@ -36,7 +51,7 @@ export default {
   background-color: $primary-color;
   border-radius: 22px;
   height: 100%;
-  box-shadow: 0px 4px 4px #231C43;
+  box-shadow: 0px 4px 4px #231c43;
 }
 
 .card__image {
