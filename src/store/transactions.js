@@ -1,4 +1,5 @@
-import { getDatabase, set, ref, push, child, onValue, update, remove } from "firebase/database";
+import { getDatabase, set, ref, push, child, query, orderByChild, update, remove, equalTo, onValue } from "firebase/database";
+import { getAuth } from "firebase/auth";
 
 
 export default {
@@ -23,14 +24,18 @@ export default {
 
   actions: {
     getTransactions({ commit }) {
+      const auth = getAuth();
+      const user = auth.currentUser;
       const db = getDatabase();
       commit("setTransactionsLoading", true);
 
-      const transactionRef = ref(db, "transactions");
+      const transactions = query(ref(db, "transactions"), orderByChild("user_uid"), equalTo(user.uid))
+      console.log(transactions);
+      commit("setTransactions", transactions);
+      commit("setTransactionsLoading", false);
 
-      onValue(transactionRef, (snapshot) => {
-        const transactions = snapshot.val();
-        commit("setTransactions", transactions);
+      onValue(transactions, (snapshot) => {
+        commit("setTransactions", snapshot.val());
         commit("setTransactionsLoading", false);
       });
     },
