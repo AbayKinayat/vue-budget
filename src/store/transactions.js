@@ -37,7 +37,7 @@ export default {
           commit("setTransactions", value);
           commit("setTransactionsLoading", false);
         } else {
-          commit("setTransactions", []);
+          commit("setTransactions", []); // if snapshot.val() is null transactions equal to empty array
           commit("setTransactionsLoading", false);
         }
       });
@@ -46,9 +46,9 @@ export default {
       const db = getDatabase();
       commit("setTransactionsLoading", true);
 
-      const transactionKey = push(child(ref(db), "transactions")).key;
+      const transactionKey = push(child(ref(db), "transactions")).key; // generate uid for new transaction
 
-      await set(ref(db, "transactions/" + transactionKey), { uid: transactionKey, ...payload })
+      await set(ref(db, "transactions/" + transactionKey), { uid: transactionKey, ...payload }) // Add transaction with uid
       commit("setTransactionsLoading", false);
     },
     async updateTransaction({ commit }, { transaction, transactionId }) {
