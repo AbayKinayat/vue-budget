@@ -30,12 +30,10 @@ export default {
       commit("setTransactionsLoading", true);
 
       const transactions = query(ref(db, "transactions"), orderByChild("user_uid"), equalTo(user.uid))
-      console.log(transactions);
-      commit("setTransactions", transactions);
-      commit("setTransactionsLoading", false);
 
       onValue(transactions, (snapshot) => {
-        commit("setTransactions", snapshot.val());
+        const value = Object.values(snapshot.val());
+        commit("setTransactions", value);
         commit("setTransactionsLoading", false);
       });
     },
@@ -45,7 +43,7 @@ export default {
 
       const transactionKey = push(child(ref(db), "transactions")).key;
 
-      await set(ref(db, "transactions/" + transactionKey), payload)
+      await set(ref(db, "transactions/" + transactionKey), { uid: transactionKey, ...payload })
       commit("setTransactionsLoading", false);
     },
     async updateTransaction({ commit }, { transaction, transactionId }) {

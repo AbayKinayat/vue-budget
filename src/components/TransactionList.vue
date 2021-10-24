@@ -2,7 +2,7 @@
   <ul>
     <li
       class="transaction__container"
-      v-for="(transaction, key) in transactions"
+      v-for="transaction in transactions"
       :key="transaction.title"
     >
       <div>
@@ -24,7 +24,7 @@
         :class="{ active: showEditBtn || showDeleteBtn }"
       >
         <button
-          @click="$emit('deleteTransaction', key)"
+          @click="$emit('deleteTransaction', transaction.uid)"
           class="delete-btn delete"
           :class="{ active: showDeleteBtn }"
         >
@@ -50,7 +50,7 @@
           </svg>
         </button>
         <button
-          @click="$emit('editTransactionOpenModal', key)"
+          @click="$emit('editTransactionOpenModal', transaction.uid)"
           class="edit-btn filter-edit-btn edit"
           :class="{ active: showEditBtn }"
         >
@@ -81,8 +81,6 @@
 </template>
 
 <script>
-import { useStore } from "vuex";
-import { computed } from "vue";
 export default {
   name: "TransactionList",
   emits: ["editTransactionOpenModal", "deleteTransaction"],
@@ -95,15 +93,10 @@ export default {
       type: Boolean,
       required: true,
     },
-  },
-  setup() {
-    const store = useStore();
-
-    const transactions = computed(() => store.getters.transactions);
-
-    return {
-      transactions,
-    };
+    transactions: {
+      type: Array,
+      required: true,
+    },
   },
 };
 </script>
