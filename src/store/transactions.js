@@ -32,9 +32,14 @@ export default {
       const transactions = query(ref(db, "transactions"), orderByChild("user_uid"), equalTo(user.uid))
 
       onValue(transactions, (snapshot) => {
-        const value = Object.values(snapshot.val());
-        commit("setTransactions", value);
-        commit("setTransactionsLoading", false);
+        if (snapshot.val()) {
+          const value = Object.values(snapshot.val());
+          commit("setTransactions", value);
+          commit("setTransactionsLoading", false);
+        } else {
+          commit("setTransactions", []);
+          commit("setTransactionsLoading", false);
+        }
       });
     },
     async addTransaction({ commit }, payload) {
