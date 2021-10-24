@@ -26,7 +26,7 @@
         ></custom-pagination>
       </div>
       <div class="transactions_right">
-        <TransactionsChart />
+        <TransactionsChart :transactions="visibleTransactions" />
         <ExchangeRates />
       </div>
     </div>
