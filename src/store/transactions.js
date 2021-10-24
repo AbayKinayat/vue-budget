@@ -33,7 +33,7 @@ export default {
 
       onValue(transactions, (snapshot) => {
         if (snapshot.val()) {
-          const value = Object.values(snapshot.val());
+          const value = Object.values(snapshot.val()); // snapshot.val() is Object. I want transform object on array
           commit("setTransactions", value);
           commit("setTransactionsLoading", false);
         } else {
