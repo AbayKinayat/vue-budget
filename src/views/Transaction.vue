@@ -1,39 +1,43 @@
 <template>
   <PageLoading v-show="loading" />
-  <transition
-    enter-active-class="page-enter-active"
-    leave-active-class=".page-enter-leave"
-  >
-    <div v-if="!loading && !pageLoading">
-      <div>
-        <h1 class="section-title">Транзакции</h1>
-      </div>
-      <div class="flex justify-between">
-        <div class="transactions_left">
-          <FilterBox
-            @showEditBtnHandler="showEditBtnHandler"
-            @showDeleteBtnHandler="showDeleteBtnHandler"
-          />
-          <TransactionList
-            :showEditBtn="showEditBtn"
-            :showDeleteBtn="showDeleteBtn"
-            @editTransactionOpenModal="editTransactionOpenModal"
-            @deleteTransaction="deleteTransaction"
-          />
-        </div>
-        <div class="transactions_right">
-          <TransactionsChart />
-          <ExchangeRates />
-        </div>
-      </div>
-      <EditTransactionModal
-        v-if="editTransactionIsOpen"
-        @closeModal="editTransactionCloseModal"
-        :isOpen="editTransactionIsOpen"
-        :transactionId="transactionId"
-      />
+  <div v-if="!loading && !pageLoading">
+    <div>
+      <h1 class="section-title">Транзакции</h1>
     </div>
-  </transition>
+    <div class="flex justify-between">
+      <div class="transactions_left">
+        <FilterBox
+          @showEditBtnHandler="showEditBtnHandler"
+          @showDeleteBtnHandler="showDeleteBtnHandler"
+        />
+        <TransactionList
+          :transactions="visibleTransactions"
+          :showEditBtn="showEditBtn"
+          :showDeleteBtn="showDeleteBtn"
+          @editTransactionOpenModal="editTransactionOpenModal"
+          @deleteTransaction="deleteTransaction"
+        />
+        <custom-pagination
+          v-if="transactions && transactions.length"
+          @updatePage="updatePage"
+          :transactions="transactions"
+          :currentPage="currentPage"
+          :pageSize="pageSize"
+        ></custom-pagination>
+      </div>
+      <div class="transactions_right">
+        <TransactionsChart />
+        <ExchangeRates />
+      </div>
+    </div>
+    <EditTransactionModal
+      v-if="editTransactionIsOpen"
+      @closeModal="editTransactionCloseModal"
+      @updateVisibleTransaction="updateVisibleTransaction"
+      :isOpen="editTransactionIsOpen"
+      :transactionId="transactionId"
+    />
+  </div>
 </template>
 
 <script>
@@ -43,6 +47,7 @@ import TransactionsChart from "@/components/TransactionsChart";
 import ExchangeRates from "@/components/ExchangeRates";
 import PageLoading from "@/components/PageLoading";
 import EditTransactionModal from "@/components/EditTransactionModal";
+import CustomPagination from "@/components/CustomPagination";
 import { computed, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 
@@ -55,6 +60,7 @@ export default {
     ExchangeRates,
     PageLoading,
     EditTransactionModal,
+    CustomPagination,
   },
   setup() {
     const store = useStore();
@@ -64,7 +70,13 @@ export default {
     const transactionId = ref("");
     const pageLoading = ref(true);
 
+    const currentPage = ref(0);
+    const pageSize = ref(5);
+    const visibleTransactions = ref([]);
     store.dispatch("getTransactions");
+
+    const transactions = computed(() => store.getters.transactions);
+
     const loading = computed(() => store.getters.transactionsLoading);
 
     const editTransactionCloseModal = () => {
@@ -90,13 +102,37 @@ export default {
         type: "success",
         text: "Вы успешно удалили транзакцию",
       });
+      updateVisibleTransaction();
+    };
+
+    const updatePage = (pageNumber) => {
+      currentPage.value = pageNumber;
+      updateVisibleTransaction();
+    };
+
+    const updateVisibleTransaction = () => {
+      visibleTransactions.value = transactions.value.slice(
+        currentPage.value * pageSize.value,
+        currentPage.value * pageSize.value + pageSize.value
+      );
+
+      // if we 0 visible transactions, go back a page
+
+      if (visibleTransactions.value.length == 0 && currentPage.value > 0) {
+        updatePage(currentPage.value - 1);
+      }
     };
 
     onMounted(() => {
       setTimeout(() => {
         pageLoading.value = false;
       }, 10);
+      updateVisibleTransaction();
     });
+
+    console.log("Transactions: ", transactions);
+    console.log("Current Page: ", currentPage);
+    console.log("Page Size: ", pageSize);
 
     return {
       loading,
@@ -105,12 +141,23 @@ export default {
       editTransactionIsOpen,
       transactionId,
       pageLoading,
+      currentPage,
+      pageSize,
+      visibleTransactions,
+      transactions,
+      updatePage,
       showEditBtnHandler,
       showDeleteBtnHandler,
       editTransactionCloseModal,
       editTransactionOpenModal,
       deleteTransaction,
+      updateVisibleTransaction,
     };
+  },
+  watch: {
+    "$store.state.transactions.transactions"() {
+      this.updateVisibleTransaction();
+    },
   },
 };
 </script>
@@ -127,10 +174,10 @@ export default {
 }
 
 .page-enter-active {
-  animation: page-in .5s;
+  animation: page-in 0.5s;
 }
 .page-leave-active {
-  animation: page-in .5s reverse;
+  animation: page-in 0.5s reverse;
 }
 @keyframes page-in {
   0% {
