@@ -7,8 +7,7 @@
 <script>
 import { BarChart } from "vue-chart-3";
 import { Chart, registerables } from "chart.js";
-import { ref, computed } from "vue";
-import { useStore } from "vuex";
+import { ref, computed, toRefs } from "vue";
 
 Chart.register(...registerables);
 Chart.defaults.color = "#7C70B2";
@@ -19,10 +18,15 @@ export default {
   components: {
     BarChart,
   },
-  setup() {
-    const store = useStore();
+  props: {
+    transactions: {
+      type: Array,
+      required: true,
+    },
+  },
+  setup(props) {
+    const { transactions } = toRefs(props);
 
-    const transactions = computed(() => store.getters.transactions);
     const transactionsIncomeCash = computed(() => {
       let allIncome = [];
       for (let key in transactions.value) {
