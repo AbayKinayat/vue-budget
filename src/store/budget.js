@@ -1,4 +1,4 @@
-import { getDatabase, ref, child, push, query, equalTo, orderByChild, onValue, set } from "firebase/database";
+import { getDatabase, ref, child, push, query, equalTo, orderByChild, onValue, set, update } from "firebase/database";
 import { getAuth } from "firebase/auth";
 
 export default {
@@ -49,5 +49,14 @@ export default {
       await set(ref(db, "budgets/" + budgetKey), { uid: budgetKey, ...payload }); // Add budget with uid
       commit("setBudgetLoading", false);
     },
+    async updateBudget({ commit }, { budget, budgetId }) {
+      const db = getDatabase();
+      const bedgetRef = ref(db, "budgets/" + budgetId);
+      commit("setBudgetLoading", true);
+
+      await update(bedgetRef, budget)
+
+      commit("setBudgetLoading", false);
+    }
   }
 }

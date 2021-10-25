@@ -4,10 +4,10 @@
     class="modal-background"
     @click="$emit('closeModal')"
   ></div>
-  <div class="modal" :class="{ active: isOpen }">
+  <div v-if="!loading" class="modal" :class="{ active: isOpen }">
     <div class="modal__header">
-      <div class="modal__title">Добавить бюджет</div>
-      <p class="modal__subtitle">Заполните форму что бы добавить бюджет</p>
+      <div class="modal__title">Изменить бюджет</div>
+      <p class="modal__subtitle">Заполните форму что бы изменить бюджет</p>
     </div>
     <div class="modal__body">
       <form @submit.prevent="submit" ref="form">
@@ -33,61 +33,68 @@
 </template>
 
 <script>
-import { reactive } from "vue";
 import { useStore } from "vuex";
-import { getAuth } from "firebase/auth";
+import { getDatabase, ref, onValue } from "firebase/database";
+import { ref as vueref } from "vue";
+
 export default {
-  name: "addBudgetModal",
+  name: "editBudgetModal",
   props: {
     isOpen: {
       type: Boolean,
       required: true,
     },
+    budgetId: {
+      type: String || Number,
+      required: true,
+    },
   },
   emits: ["closeModal"],
   setup(props, { emit }) {
-    const auth = getAuth();
+    const db = getDatabase();
     const store = useStore();
-    const budget = reactive({
-      goal_title: "",
-      goal_cash: "",
-      current_cash: "",
+    const loading = vueref(true);
+
+    const budgetRef = ref(db, "budgets/" + props.budgetId);
+    let budget = vueref(null);
+
+    onValue(budgetRef, (snapshot) => {
+      budget.value = snapshot.val();
+      loading.value = false;
     });
 
     const submit = async () => {
       // Submit validation
       var validated = true;
-      for (let key in budget) {
-        if (!budget[key]) {
+      for (let key in budget.value) {
+        if (!budget.value[key]) {
           validated = false;
         }
       }
       // if validated add Transaction
       if (validated) {
-        await store.dispatch("addBudget", {
-          ...budget,
-          user_uid: auth.currentUser.uid,
+        await store.dispatch("updateBudget", {
+          budget: budget.value,
+          budgetId: props.budgetId,
         });
         store.dispatch("setSnackbar", {
           isOpen: true,
           type: "success",
-          text: "Вы успешно добавили бюджет",
+          text: "Вы успешно изменили бюджет",
         });
-        for (let key in budget) {
-          budget[key] = "";
-        }
         emit("closeModal");
       } else {
         store.dispatch("setSnackbar", {
           isOpen: true,
           type: "warning",
-          text: "Заполните форму для того что бы добавить бюджет",
+          text: "Заполните форму для того что бы изменить бюджет",
         });
       }
     };
 
     return {
       budget,
+      loading,
       submit,
     };
   },

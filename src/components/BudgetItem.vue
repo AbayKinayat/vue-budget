@@ -20,7 +20,12 @@
           </svg>
         </div>
         <div class="help-action" :class="{ active: helpIsOpen }">
-          <div class="help-action__item">Изменить</div>
+          <div
+            @click="$emit('editBudget', budget.uid)"
+            class="help-action__item"
+          >
+            Изменить
+          </div>
           <div class="help-action__item">Удалить</div>
         </div>
       </div>
@@ -41,9 +46,10 @@
 </template>
 
 <script>
-import { computed, toRefs, ref, onMounted, onBeforeUnmount } from "vue";
+import { computed, toRefs, ref, onMounted, onBeforeUnmount, watch } from "vue";
 export default {
   name: "BudgetItem",
+  emits: ["editBudget"],
   props: {
     budget: {
       type: Object,
@@ -57,7 +63,7 @@ export default {
     const budgetCurrentCashPercent = computed(() => {
       const result = (100 * budget.value.current_cash) / budget.value.goal_cash;
       if (result) {
-        return result.toFixed(0);
+        return result.toFixed(1);
       }
       return 0;
     });
@@ -77,6 +83,10 @@ export default {
       document.addEventListener("click", closeHelp);
     });
 
+    watch(budgetCurrentCashPercent, () => {
+      changeCircleCurrentCashResult(budgetCurrentCashPercent.value);
+    })
+
     onBeforeUnmount(() => {
       document.removeEventListener("click", closeHelp);
     });
@@ -85,7 +95,7 @@ export default {
       console.log("value", circle.value);
       circle.value.style[
         "stroke-dashoffset"
-      ] = `calc(440 - (440 * ${value}) / 100)`;
+      ] = `calc(470 - (470 * ${value}) / 100)`;
     };
 
     return {
@@ -136,7 +146,7 @@ export default {
     circle:nth-child(2) {
       stroke-dashoffset: calc(440 - (440 * 0) / 100);
       stroke: #03a9f4;
-      transition: 0.5s;
+      transition: 3s;
     }
   }
 }
