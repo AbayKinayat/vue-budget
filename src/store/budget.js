@@ -1,4 +1,4 @@
-import { getDatabase, ref, child, push, query, equalTo, orderByChild, onValue, set, update } from "firebase/database";
+import { getDatabase, ref, child, push, query, equalTo, orderByChild, onValue, set, update, remove } from "firebase/database";
 import { getAuth } from "firebase/auth";
 
 export default {
@@ -57,6 +57,14 @@ export default {
       await update(bedgetRef, budget)
 
       commit("setBudgetLoading", false);
+    },
+    async deleteBudget({ commit }, budgetId) {
+      const db = getDatabase();
+      const budgetRef = ref(db, "budgets/" + budgetId);
+      commit("setTransactionsLoading", true);
+
+      await remove(budgetRef);
+      commit("setTransactionsLoading", false);
     }
   }
 }

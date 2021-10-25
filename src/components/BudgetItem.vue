@@ -26,7 +26,9 @@
           >
             Изменить
           </div>
-          <div class="help-action__item">Удалить</div>
+          <div @click="deleteBudget(budget.uid)" class="help-action__item">
+            Удалить
+          </div>
         </div>
       </div>
       <span class="card__subtitle">Накоплено: {{ budget.current_cash }}</span>
@@ -47,6 +49,7 @@
 
 <script>
 import { computed, toRefs, ref, onMounted, onBeforeUnmount, watch } from "vue";
+import { useStore } from "vuex";
 export default {
   name: "BudgetItem",
   emits: ["editBudget"],
@@ -60,6 +63,7 @@ export default {
     const circle = ref(null);
     const helpIsOpen = ref(false);
     const { budget } = toRefs(props);
+    const store = useStore();
     const budgetCurrentCashPercent = computed(() => {
       const result = (100 * budget.value.current_cash) / budget.value.goal_cash;
       if (result) {
@@ -85,23 +89,34 @@ export default {
 
     watch(budgetCurrentCashPercent, () => {
       changeCircleCurrentCashResult(budgetCurrentCashPercent.value);
-    })
+    });
 
     onBeforeUnmount(() => {
       document.removeEventListener("click", closeHelp);
     });
 
     const changeCircleCurrentCashResult = (value) => {
-      console.log("value", circle.value);
       circle.value.style[
         "stroke-dashoffset"
       ] = `calc(470 - (470 * ${value}) / 100)`;
+    };
+
+    const deleteBudget = async (budgetId) => {
+      if (confirm("Вы действительно хотите удалить бюджет?")) {
+        await store.dispatch("deleteBudget", budgetId);
+        store.dispatch("setSnackbar", {
+          isOpen: true,
+          type: "success",
+          text: "Вы успешно удалили бюджет",
+        });
+      }
     };
 
     return {
       budgetCurrentCashPercent,
       circle,
       helpIsOpen,
+      deleteBudget,
     };
   },
 };
