@@ -98,7 +98,7 @@ export default {
     const changeCircleCurrentCashResult = (value) => {
       circle.value.style[
         "stroke-dashoffset"
-      ] = `calc(470 - (470 * ${value}) / 100)`;
+      ] = `calc(315 - (315 * ${value}) / 100)`;
     };
 
     const deleteBudget = async (budgetId) => {
@@ -137,8 +137,9 @@ export default {
     position: relative;
     width: 120px;
     height: 120px;
-    transform: rotateZ(-85deg);
     top: -5px;
+
+    transform: rotate(-88deg);
 
     circle {
       width: 120px;
@@ -148,8 +149,8 @@ export default {
       stroke: #000;
       transform: translate(5px, 5px);
       stroke-width: 7;
-      stroke-dasharray: 440;
-      stroke-dashoffset: 440;
+      stroke-dasharray: 315;
+      stroke-dashoffset: 315;
       stroke-linecap: round;
     }
 
@@ -159,7 +160,7 @@ export default {
     }
 
     circle:nth-child(2) {
-      stroke-dashoffset: calc(440 - (440 * 0) / 100);
+      stroke-dashoffset: calc(315 - (315 * 50) / 100);
       stroke: #03a9f4;
       transition: 3s;
     }
