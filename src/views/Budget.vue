@@ -11,14 +11,24 @@
           :budget="budget"
           v-for="budget of budgets"
           :key="budget.uid"
+          @editBudget="editBudgetModalOpen"
         />
-        <div @click="openModal" class="budget__add-card">
+        <div @click="addBudgetModalOpen" class="budget__add-card">
           <span>Добавить бюджет</span>
         </div>
       </ul>
     </div>
   </transition>
-  <addBudgetModal @closeModal="closeModal" :isOpen="addBudgetModalIsOpen" />
+  <addBudgetModal
+    @closeModal="addBudgetModalClose"
+    :isOpen="addBudgetModalIsOpen"
+  />
+  <EditBudgetModal
+    v-if="editBudgetModalIsOpen && budgetId"
+    :isOpen="editBudgetModalIsOpen"
+    @closeModal="editBudgetModalClose"
+    :budgetId="budgetId"
+  />
 </template>
 
 <script>
@@ -26,24 +36,38 @@ import { onMounted, ref, computed } from "vue";
 import { useStore } from "vuex";
 import BudgetItem from "@/components/BudgetItem";
 import addBudgetModal from "@/components/addBudgetModal";
+import EditBudgetModal from "@/components/EditBudgetModal";
 export default {
   name: "Budget",
   components: {
     BudgetItem,
     addBudgetModal,
+    EditBudgetModal,
   },
   setup() {
     const loading = ref(true);
     const store = useStore();
     const addBudgetModalIsOpen = ref(false);
+    const editBudgetModalIsOpen = ref(false);
+    const budgetId = ref(null);
 
     //Modal Management
-    const closeModal = () => {
+    const addBudgetModalClose = () => {
       addBudgetModalIsOpen.value = false;
     };
 
-    const openModal = () => {
+    const addBudgetModalOpen = () => {
       addBudgetModalIsOpen.value = true;
+    };
+
+    const editBudgetModalOpen = (id) => {
+      budgetId.value = id;
+      editBudgetModalIsOpen.value = true;
+    };
+
+    const editBudgetModalClose = () => {
+      budgetId.value = null;
+      editBudgetModalIsOpen.value = false;
     };
 
     // Get budgets
@@ -59,9 +83,13 @@ export default {
     return {
       loading,
       budgets,
+      budgetId,
       addBudgetModalIsOpen,
-      closeModal,
-      openModal,
+      addBudgetModalClose,
+      addBudgetModalOpen,
+      editBudgetModalIsOpen,
+      editBudgetModalOpen,
+      editBudgetModalClose,
     };
   },
 };
