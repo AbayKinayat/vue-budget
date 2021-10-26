@@ -5,18 +5,31 @@
   >
     <div v-if="!loading">
       <h1 class="section-title">Бюджет</h1>
-      <h4 class="section-title-two">Активные</h4>
-      <ul class="flex">
-        <BudgetItem
-          :budget="budget"
-          v-for="budget of budgets"
-          :key="budget.uid"
-          @editBudget="editBudgetModalOpen"
-        />
-        <div @click="addBudgetModalOpen" class="budget__add-card">
-          <span>Добавить бюджет</span>
-        </div>
-      </ul>
+      <div class="mb-8">
+        <h4 class="section-title-two">Активные</h4>
+        <ul class="flex">
+          <BudgetItem
+            :budget="budget"
+            v-for="budget of activeBudgets"
+            :key="budget.uid"
+            @editBudget="editBudgetModalOpen"
+          />
+          <div @click="addBudgetModalOpen" class="budget__add-card">
+            <span>Добавить бюджет</span>
+          </div>
+        </ul>
+      </div>
+      <div>
+        <h4 class="section-title-two">Завершенные</h4>
+        <ul class="flex">
+          <BudgetItem
+            :budget="budget"
+            v-for="budget of doneBudgets"
+            :key="budget.uid"
+            @editBudget="editBudgetModalOpen"
+          />
+        </ul>
+      </div>
     </div>
   </transition>
   <addBudgetModal
@@ -73,7 +86,8 @@ export default {
     // Get budgets
     store.dispatch("getBudgets");
 
-    const budgets = computed(() => store.getters.budgets);
+    const activeBudgets = computed(() => store.getters.activeBudgets);
+    const doneBudgets = computed(() => store.getters.doneBudgets);
 
     // loading for transition animation
     onMounted(() => {
@@ -82,7 +96,8 @@ export default {
 
     return {
       loading,
-      budgets,
+      activeBudgets,
+      doneBudgets,
       budgetId,
       addBudgetModalIsOpen,
       addBudgetModalClose,
@@ -151,6 +166,8 @@ export default {
   align-items: center;
   max-width: 270px;
   width: 100%;
+  min-height: 200px;
+  height: inherit;
   cursor: pointer;
   transition: 0.3s;
 

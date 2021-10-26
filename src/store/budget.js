@@ -11,6 +11,8 @@ export default {
 
   getters: {
     budgets: (state) => state.budgets,
+    activeBudgets: (state) => state.budgets.filter(budget => +budget.current_cash < +budget.goal_cash),
+    doneBudgets: (state) => state.budgets.filter(budget => +budget.current_cash >= +budget.goal_cash),
     budgetLoading: (state) => state.budgetLoading,
   },
 

@@ -96,9 +96,18 @@ export default {
     });
 
     const changeCircleCurrentCashResult = (value) => {
-      circle.value.style[
-        "stroke-dashoffset"
-      ] = `calc(315 - (315 * ${value}) / 100)`;
+      if (+value < 100) {
+        circle.value.style[
+          "stroke-dashoffset"
+        ] = `calc(315 - (315 * ${value}) / 100)`;
+        return;
+      }
+      if (+value >= 100) {
+        circle.value.style[
+          "stroke-dashoffset"
+        ] = `calc(315 - (315 * ${100}) / 100)`;
+        return;
+      }
     };
 
     const deleteBudget = async (budgetId) => {
