@@ -1,37 +1,30 @@
 <template>
-  <transition
-    enter-active-class="page-enter-active"
-    leave-active-class="page-enter-leave"
-  >
-    <div v-if="!loading">
-      <h1 class="section-title">Бюджет</h1>
-      <div class="mb-8">
-        <h4 class="section-title-two">Активные</h4>
-        <ul class="flex">
-          <BudgetItem
-            :budget="budget"
-            v-for="budget of activeBudgets"
-            :key="budget.uid"
-            @editBudget="editBudgetModalOpen"
-          />
-          <div @click="addBudgetModalOpen" class="budget__add-card">
-            <span>Добавить бюджет</span>
-          </div>
-        </ul>
+  <h1 class="section-title">Бюджет</h1>
+  <div class="mb-8">
+    <h4 class="section-title-two">Активные</h4>
+    <ul class="flex">
+      <BudgetItem
+        :budget="budget"
+        v-for="budget of activeBudgets"
+        :key="budget.uid"
+        @editBudget="editBudgetModalOpen"
+      />
+      <div @click="addBudgetModalOpen" class="budget__add-card">
+        <span>Добавить бюджет</span>
       </div>
-      <div>
-        <h4 class="section-title-two">Завершенные</h4>
-        <ul class="flex">
-          <BudgetItem
-            :budget="budget"
-            v-for="budget of doneBudgets"
-            :key="budget.uid"
-            @editBudget="editBudgetModalOpen"
-          />
-        </ul>
-      </div>
-    </div>
-  </transition>
+    </ul>
+  </div>
+  <div>
+    <h4 class="section-title-two">Завершенные</h4>
+    <ul class="flex">
+      <BudgetItem
+        :budget="budget"
+        v-for="budget of doneBudgets"
+        :key="budget.uid"
+        @editBudget="editBudgetModalOpen"
+      />
+    </ul>
+  </div>
   <addBudgetModal
     @closeModal="addBudgetModalClose"
     :isOpen="addBudgetModalIsOpen"
@@ -45,11 +38,12 @@
 </template>
 
 <script>
-import { onMounted, ref, computed } from "vue";
+import { ref, computed } from "vue";
 import { useStore } from "vuex";
 import BudgetItem from "@/components/BudgetItem";
 import addBudgetModal from "@/components/addBudgetModal";
 import EditBudgetModal from "@/components/EditBudgetModal";
+
 export default {
   name: "Budget",
   components: {
@@ -58,8 +52,8 @@ export default {
     EditBudgetModal,
   },
   setup() {
-    const loading = ref(true);
     const store = useStore();
+    store.dispatch("getBudgets");
     const addBudgetModalIsOpen = ref(false);
     const editBudgetModalIsOpen = ref(false);
     const budgetId = ref(null);
@@ -84,18 +78,11 @@ export default {
     };
 
     // Get budgets
-    store.dispatch("getBudgets");
 
     const activeBudgets = computed(() => store.getters.activeBudgets);
     const doneBudgets = computed(() => store.getters.doneBudgets);
 
-    // loading for transition animation
-    onMounted(() => {
-      loading.value = false;
-    });
-
     return {
-      loading,
       activeBudgets,
       doneBudgets,
       budgetId,

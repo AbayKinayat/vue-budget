@@ -73,25 +73,27 @@
             </router-link>
           </li>
           <li class="nav-link">
-            <div v-show="false" class="active-line"></div>
-            <svg
-              class="statistic-icon"
-              viewBox="0 0 35 31"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g clip-path="url(#clip0)">
-                <path
-                  d="M31.9985 11.9666H23.2485V27.7369H21.061V4.08139H12.311V27.7369H10.1235V16.6977H1.37353V27.7369H-0.813965V29.3139H1.37353H10.1235H12.311H21.061H23.2485H31.9985H34.186V27.7369H31.9985V11.9666Z"
-                  class="statistic-icon_color"
-                />
-              </g>
-              <defs>
-                <clipPath id="clip0">
-                  <rect width="35" height="31" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
+            <div v-show="$route.name === 'Statistic'" class="active-line"></div>
+            <router-link active-class="active" :to="{ name: 'Statistic' }">
+              <svg
+                class="statistic-icon"
+                viewBox="0 0 35 31"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g clip-path="url(#clip0)">
+                  <path
+                    d="M31.9985 11.9666H23.2485V27.7369H21.061V4.08139H12.311V27.7369H10.1235V16.6977H1.37353V27.7369H-0.813965V29.3139H1.37353H10.1235H12.311H21.061H23.2485H31.9985H34.186V27.7369H31.9985V11.9666Z"
+                    class="statistic-icon_color"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0">
+                    <rect width="35" height="31" fill="white" />
+                  </clipPath>
+                </defs>
+              </svg>
+            </router-link>
           </li>
           <li class="nav-link">
             <button @click="$emit('showModal')" class="add-item_circle">

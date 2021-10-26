@@ -50,6 +50,12 @@ const routes = [
     path: "/registration",
     name: "Registration",
     component: () => import("@/views/LoginPage")
+  },
+  {
+    path: "/statistic",
+    name: "Statistic",
+    component: () => import("@/views/Statistic"),
+    beforeEnter: authGuard,
   }
 ]
 
